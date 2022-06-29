@@ -4,26 +4,32 @@
 #define MAX_ROTATIONS  80
 #define GENERAL_MEMORY_PROBLEM printf( "You do not have enough memory ([m|re]alloc failure)\nDying\n\n" ) ; exit( EXIT_FAILURE ) ;
 
-struct electrostatics
-{
+struct Atom{
     int charge;
+    int name;
+};
+struct Residue
+{
+    int n;
+    struct Atom *atoms;
 
 };
-__global__ void testfunc(struct electrostatics *a)
-{
-    int i = threadIdx.x;
-    a[i].charge=2+i;
-}
+
+
 
 int main()
 {
-    struct electrostatics *a,b[2];
-    cudaMalloc(&a,2*sizeof(electrostatics));
-    testfunc<<<1,2>>>(a);
+    struct Residue r[2];
+
+
+    cudaMalloc((void**)&r[0].atoms,2*sizeof(struct Atom));
     cudaDeviceSynchronize();
-    cudaMemcpy(b,a,2*sizeof(electrostatics),cudaMemcpyDeviceToHost);
+    cudaMalloc((void**)&r[1].atoms,2*sizeof(struct Atom));
     cudaDeviceSynchronize();
-    printf("%d %d",b[0].charge,b[1].charge);
+    printf("hello whatsup");
+
+
+    
 
 }
 
