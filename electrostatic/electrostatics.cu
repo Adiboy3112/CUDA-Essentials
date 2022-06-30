@@ -15,18 +15,43 @@ struct Residue
 
 };
 
+__global__ void foo2(struct Residue *r)
+{
+    
+    int i=threadIdx.y;
+    int j= threadIdx.x;
+    r[i].atoms[j].name=j;
+    r[j].atoms[j].charge=j;
+    printf("reached\n");
+    printf("%d %d\n",r[i].atoms[j].name,r[j].atoms[j].charge);
+
+}
+
 
 
 int main()
 {
-    struct Residue r[2];
+    struct Residue r[2],*rc;
 
+        cudaMalloc((void**)&(r[0].atoms),2*sizeof(struct Atom));
+        cudaDeviceSynchronize();
+        cudaMalloc((void**)&(r[1].atoms),2*sizeof(struct Atom));
+        cudaDeviceSynchronize();
+        cudaMalloc((void**)&rc,2*sizeof(struct Residue));
+        cudaDeviceSynchronize();
+        cudaMemcpy(rc,r,2*sizeof(struct Residue),cudaMemcpyHostToDevice);
+        cudaDeviceSynchronize();
 
-    cudaMalloc((void**)&r[0].atoms,2*sizeof(struct Atom));
+    
+     printf("hello whatsup");
+
+    
+    
+
+    dim3 threadsperblock(2,2);
+    foo2<<<1,threadsperblock>>>(rc);
     cudaDeviceSynchronize();
-    cudaMalloc((void**)&r[1].atoms,2*sizeof(struct Atom));
-    cudaDeviceSynchronize();
-    printf("hello whatsup");
+  
 
 
     
