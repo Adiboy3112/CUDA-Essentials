@@ -31,6 +31,7 @@ int main()
   cudaMalloc((void**)&AnglesonGPU.theta,MAX_ROTATIONS * sizeof( int ));
   cudaMalloc((void**)&AnglesonGPU.phi,MAX_ROTATIONS * sizeof( int ));
   testfunc<<<1,MAX_ROTATIONS>>>(AnglesonGPU);
+  cudaGetLastError();
   cudaDeviceSynchronize();
   int x=MAX_ROTATIONS*sizeof(int);
   cudaMemcpy(Angles.z_twist, AnglesonGPU.z_twist,x,cudaMemcpyDeviceToHost);
